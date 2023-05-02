@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cJSON.c" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="uniStr.c" />
   </ItemGroup>
   <ItemGroup>
