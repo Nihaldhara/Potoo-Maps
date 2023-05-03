@@ -20,11 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cJSON.c" />
+    <ClCompile Include="graph.c" />
+    <ClCompile Include="graphList.c" />
+    <ClCompile Include="graphMat.c" />
+    <ClCompile Include="intList.c" />
+    <ClCompile Include="intTree.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="map.c" />
+    <ClCompile Include="parsing.c" />
     <ClCompile Include="uniStr.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h" />
+    <ClInclude Include="graph.h" />
+    <ClInclude Include="intList.h" />
+    <ClInclude Include="intTree.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="parsing.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="uniStr.h" />
   </ItemGroup>
