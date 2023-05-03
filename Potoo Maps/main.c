@@ -18,12 +18,31 @@ int main()
 	for (int i = 0; i < 156; i++)
 		fgets(test, 4096, file);
 
+	//Calcul de la longueur maximale du fichier et initialisation de la barre de chargement
+	long total, atm, previous = 0;
+	fseek(file, 0, SEEK_END);
+	total = ftell(file);
+	rewind(file);
+	(float)total /= 20.0f;
+	printf("Lecture du fichier\n-------------------\n"); // La barre de chargement doit etre égal a n-1, n était le diviseur de "total"
+
 	//Boucle de lecture et stockage des différentes intersections
 	while(!feof(file))
 	{
 		fgets(test, 4096, file);
 		cJSON* object = cJSON_ParseWithLength(test, 4096);
 		cJSON* jNodes = cJSON_GetObjectItem(object, "nodes");
+		
+		//Calcul du pourcentage d'avancement de la barre de cahrgement
+		atm = ftell(file);
+		float res = (float)atm / (float)total;
+		if ((float)atm >= ((float)previous + (float)total))
+		{
+			previous = atm;
+			printf("#");
+		}
+		
+
 		if (cJSON_IsArray(jNodes) == true)
 		{
 			cJSON* jNode = NULL;
@@ -67,6 +86,7 @@ int main()
 	}
 
 	//(Affichage)
+	printf("\n");
 	for (int i = 0; i < 10000; i++)
 	{
 		if (occurrences[i] > 1)
