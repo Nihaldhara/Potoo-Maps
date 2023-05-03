@@ -8,32 +8,6 @@
 
 int main()
 {
-	//Là je choppe le tout dernier point, parce que pourquoi pas
-	/*while (!feof(file))
-		fgets(test, 4096, file);
-	//Ici je transforme la lecture de mon fichier en objet, puis en un truc que je peux print
-	cJSON* object = cJSON_ParseWithLength(test, 4096);
-	char* print = cJSON_Print(object);
-	//Et là je découpe uniquement les nodes du segment
-	cJSON* jNodes = cJSON_GetObjectItem(object, "nodes");
-	print = cJSON_Print(jNodes);
-
-	//Là je print les lattitudes et longitudes proprement
-	if (cJSON_IsArray(jNodes) == true)
-	{
-		cJSON* jNode = NULL;
-		cJSON_ArrayForEach(jNode, jNodes)
-		{
-			cJSON* jLat = cJSON_GetObjectItem(jNode, "lat");
-			cJSON* jLon = cJSON_GetObjectItem(jNode, "lon");
-
-			printf("lon : %lf  |  lat : %lf\n", 
-				atof(cJSON_GetStringValue(jLon)), atof(cJSON_GetStringValue(jLat)));
-		}
-	}*/
-
-	
-
 	//Création du graphe
 	//   -Tri des différents points :
 	int count = 0;
@@ -58,9 +32,9 @@ int main()
 				cJSON* jLat = cJSON_GetObjectItem(jNode, "lat");
 				cJSON* jLon = cJSON_GetObjectItem(jNode, "lon");
 
-				if (stockNodes[0].longitude == 0 && stockNodes[0].lattitude == 0)
+				if (stockNodes[0].longitude == 0 && stockNodes[0].latitude == 0)
 				{
-					stockNodes[count].lattitude = atof(cJSON_GetStringValue(jLat));
+					stockNodes[count].latitude = atof(cJSON_GetStringValue(jLat));
 					stockNodes[count].longitude = atof(cJSON_GetStringValue(jLon));
 					occurrences[count++]++;
 				}
@@ -69,9 +43,9 @@ int main()
 				{
 					int j = 0;
 					bool found = false;
-					while (stockNodes[j].lattitude != 0 && stockNodes[j].longitude != 0)
+					while (stockNodes[j].latitude != 0 && stockNodes[j].longitude != 0)
 					{
-						if (atof(cJSON_GetStringValue(jLat)) == stockNodes[j].lattitude
+						if (atof(cJSON_GetStringValue(jLat)) == stockNodes[j].latitude
 							&& atof(cJSON_GetStringValue(jLon)) == stockNodes[j].longitude)
 						{
 							occurrences[j]++;
@@ -83,7 +57,7 @@ int main()
 
 					if (!found)
 					{
-						stockNodes[count].lattitude = atof(cJSON_GetStringValue(jLat));
+						stockNodes[count].latitude = atof(cJSON_GetStringValue(jLat));
 						stockNodes[count].longitude = atof(cJSON_GetStringValue(jLon));
 						occurrences[count++]++;
 					}
@@ -97,7 +71,7 @@ int main()
 	{
 		if (occurrences[i] > 1)
 		{
-			printf("%d | %lf ; %lf\n", occurrences[i], stockNodes[i].lattitude, stockNodes[i].longitude);
+			printf("%d | %lf ; %lf\n", occurrences[i], stockNodes[i].latitude, stockNodes[i].longitude);
 		}
 	}
 
