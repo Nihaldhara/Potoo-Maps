@@ -28,6 +28,8 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
     <ClCompile Include="parsing.c" />
+    <ClCompile Include="path.c" />
+    <ClCompile Include="ShortestPath.c" />
     <ClCompile Include="uniStr.c" />
   </ItemGroup>
   <ItemGroup>
@@ -37,7 +39,9 @@
     <ClInclude Include="intTree.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="parsing.h" />
+    <ClInclude Include="path.h" />
     <ClInclude Include="settings.h" />
+    <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="uniStr.h" />
   </ItemGroup>
   <ItemGroup>
