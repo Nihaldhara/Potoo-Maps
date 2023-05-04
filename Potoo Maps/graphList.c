@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "map.h"
 
 #ifndef _GRAPH_MAT
 
@@ -26,6 +27,8 @@ struct sGraphNode
     int positiveValency;
     /// @brief Liste des arcs sortants du noeud.
     ArcList* arcList;
+    /// @brief Point associé au noeud.
+    Point coordinates;
 };
 
 /// @brief Structure représentant une liste simplement chaînée des arcs sortants d'un noeud.
@@ -77,6 +80,12 @@ void Graph_print(Graph* graph)
     }
 }
 
+void Graph_setCoordinates(Graph* graph, int u, Point coordinates)
+{
+    if (u < graph->size && u >= 0)
+        graph->nodes[u].coordinates = coordinates;
+}
+
 void Graph_set(Graph* graph, int u, int v, float weight)
 {
     bool exists = false;
@@ -116,6 +125,11 @@ void Graph_set(Graph* graph, int u, int v, float weight)
 
         current->next = new;
     }
+}
+
+Point Graph_getCoordinates(Graph* graph, int u)
+{
+    if (u < graph->size && u >= 0 && graph) return graph->nodes[u].coordinates;
 }
 
 float Graph_get(Graph* graph, int u, int v)

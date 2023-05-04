@@ -46,6 +46,12 @@ int Graph_size(Graph *graph);
 /// @param graph le graphe.
 void Graph_print(Graph *graph);
 
+/// @brief Définit les coordonnées d'un point
+/// @param graph le graph
+/// @param u l'identifiant du noeud
+/// @param coordinates les coordonnées à assigner
+void Graph_setCoordinates(Graph* graph, int u, Point coordinates);
+
 /// @brief Définit le poids d'un arc dans un graphe.
 /// Cette méthode permet également de supprimer un arc en donnant un poids
 /// négatif.
@@ -54,6 +60,11 @@ void Graph_print(Graph *graph);
 /// @param v l'identifiant du noeud d'arrivée.
 /// @param weight le poids de l'arc.
 void Graph_set(Graph *graph, int u, int v, float weight);
+
+/// @brief Renvoie les coordonnées d'un point dans un graphe.
+/// @param graph le graphe
+/// @param u l'identifiant du noeuf de départ
+Point Graph_getCoordinates(Graph* graph, int u);
 
 /// @brief Renvoie le poids d'un arc dans un graphe.
 /// S'il n'y a pas d'arc, cette méthode renvoie -1.0f.
