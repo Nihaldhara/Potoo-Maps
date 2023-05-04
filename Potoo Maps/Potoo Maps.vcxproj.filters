@@ -45,6 +45,12 @@
     <ClCompile Include="map.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShortestPath.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="path.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h">
@@ -69,6 +75,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShortestPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
