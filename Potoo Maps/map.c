@@ -20,3 +20,20 @@ double Distance(Point a, Point b)
 	double res = ((sina * sinb) + (cosa * cosb * cosab));
 	return (6378137 * acos(res));
 }
+
+
+Point Get_NearestPoint(Point start, Point* stockNodes, int count)
+{
+	double distance = INFINI;
+	int res = 0;
+	for (int i = 0; i < count; i++)
+	{
+	
+		if (distance >= Distance(start, stockNodes[i]))
+		{
+			distance = Distance(start, stockNodes[i]);
+			res = i;
+		}
+	}
+	return stockNodes[res];
+}
