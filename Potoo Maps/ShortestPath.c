@@ -1,7 +1,6 @@
-﻿#include "settings.h"
-#include "shortestPath.h"
+﻿#include "shortestPath.h"
 #include <math.h>
-//#include "Binary.h"
+#include "Binary.h"
 
 #define INFINI 10000
 
@@ -73,18 +72,18 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
     distances[start] = 0.0f;
     predecessors[start] = -1;
 
-    /*BinHeap* heap = BinHeap_create(size);
+    BinHeap* heap = BinHeap_create(size);
     heap = BinNode_insert(heap, start, distances[start]);
-*/
-//Si end est inf�rieur � 0 on cherche le plus court chemin pour tous les noeuds 
+
+    //Si end est inf�rieur � 0 on cherche le plus court chemin pour tous les noeuds 
     if (end < 0)
     {
         while (!allexplored)
         {
             //On cherche le noeud pas explore avec la distance minimale
-            //BinNode node = BinNode_remove(heap);
-            //u = node.id;
-            u = Graph_dijkstra_firstnode(graph, u, explored, distances);
+            BinNode node = BinNode_remove(heap);
+            u = node.id;
+            //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             explored[u] = true;
             if (distances[u] == INFINI)
@@ -100,7 +99,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
                 {
                     predecessors[j] = u;
                     distances[j] = distances[u] + Graph_get(graph, u, j);
-                    //BinNode_insert(heap, j, distances[j]);
+                    BinNode_insert(heap, j, distances[j]);
                 }
             }
 
@@ -114,15 +113,15 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
         }
     }
 
-    //Si end est superieur a 0 on cherche le plus court chemin entre end et le start
+    //Si end est superieur � 0 on cherche le plus court chemin entre end et le start
     else if (end >= 0)
     {
         while (u != end)
         {
             //On cherche le noeud pas explore avec la distance minimale
-            //BinNode node = BinNode_remove(heap);
-            //u = node.id;
-            u = Graph_dijkstra_firstnode(graph, u, explored, distances);
+            BinNode node = BinNode_remove(heap);
+            u = node.id;
+            //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             explored[u] = true;
             if (distances[u] == INFINI)
@@ -138,13 +137,13 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
                 {
                     predecessors[arc[j].target] = u;
                     distances[arc[j].target] = distances[u] + Graph_get(graph, u, arc[j].target);
-                    //BinNode_insert(heap, arc[j].target, distances[arc[j].target]);
+                    BinNode_insert(heap, arc[j].target, distances[arc[j].target]);
                 }
             }
             free(arc);
         }
     }
-    //BinHeap_destroy(heap);
+    BinHeap_destroy(heap);
     free(explored);
 }
 
