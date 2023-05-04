@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "parsing.h"
 #include "map.h"
+#include "ShortestPath.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -32,9 +33,6 @@ int main()
 	for (int i = 0; i < CHARGEMENT-1; i++)
 		printf("-");
 	printf("\n");
-
-for (int i = 0; i < 156; i++)
-		fgets(segment, 4096, file);
 
 	//Boucle de lecture et stockage des différentes intersections
 	while(!feof(file))
@@ -91,21 +89,26 @@ for (int i = 0; i < 156; i++)
 		}
 	}
 
-	//(Affichage)
+	//Rectifications parce que je sais pas coder proprement
+	int* newOccurrences = (int*)calloc(count, sizeof(int));
+	Point* newCoordinates = (Point*)calloc(count, sizeof(Point));
+	int realCount = 0;
 	printf("\n");
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < count; i++)
 	{
 		if (occurrences[i] > 1)
 		{
-			printf("%d | %lf %lf\n", occurrences[i], stockNodes[i].latitude, stockNodes[i].longitude);
+			//printf("%d | %lf %lf\n", occurrences[i], stockNodes[i].latitude, stockNodes[i].longitude);
+			newOccurrences[realCount] = occurrences[i];
+			newCoordinates[realCount++] = stockNodes[i];
 		}
 	}
 
 	//Création du graphe
-	Graph* graph = Graph_create(count);
-	for (int i = 0; i < count; i++)
+	Graph* graph = Graph_create(realCount);
+	for (int i = 0; i < realCount; i++)
 	{
-		Graph_setCoordinates(graph, i, stockNodes[i]);
+		Graph_setCoordinates(graph, i, newCoordinates[i]);
 	}
 
 	rewind(file);
@@ -147,16 +150,16 @@ for (int i = 0; i < 156; i++)
 				for (int i = 0; i < count; i++)
 				{
 					if (!encountered
-						&& stockNodes[i].latitude == dLat
-						&& stockNodes[i].longitude == dLon)
+						&& newCoordinates[i].latitude == dLat
+						&& newCoordinates[i].longitude == dLon)
 					{
 						encountered = true;
 						lastIntersection = i;
 					}
 
 					else if (encountered
-						&& stockNodes[i].latitude == dLat
-						&& stockNodes[i].longitude == dLon)
+						&& newCoordinates[i].latitude == dLat
+						&& newCoordinates[i].longitude == dLon)
 					{
 						Graph_set(graph, lastIntersection, i, distance);
 						Graph_set(graph, i, lastIntersection, distance);
@@ -172,4 +175,27 @@ for (int i = 0; i < 156; i++)
 	}
 
 	Graph_print(graph);
+
+	//Recherche du plus court chemin
+	Path* path = Graph_shortestPath(graph, 0, 463);
+	IntListNode* current = path->list->sentinel.next;
+	Point* res = (Point*)calloc(path->list->nodeCount, sizeof(Point));
+	int k = 0;
+	while (current != &path->list->sentinel)
+	{
+		res[k++] = Graph_getCoordinates(graph, current->value);
+		current = current->next;
+	}
+
+	//Ecriture du fichier de sortie
+	FILE* test = fopen("../output.json", "w");
+	char* bFile = "{\n		\"type\": \"FeatureCollection\",\n		\"features\" : [\n	{\n		\"type\": \"Feature\",\n			\"geometry\" :\n		{\n			\"type\": \"LineString\",\n				\"coordinates\" : [\n";
+	char* eFile = "				]\n			}\n		}\n	]\n}\n";
+
+	fprintf(test, bFile);
+	for (int i = 0; i < k; i++)
+	{
+		fprintf(test, "					[%lf, %lf],\n", res[k].longitude, res[k].latitude);
+	}
+	fprintf(test, eFile);
 }

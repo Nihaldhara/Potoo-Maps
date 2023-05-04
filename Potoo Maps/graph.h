@@ -64,7 +64,7 @@ void Graph_set(Graph *graph, int u, int v, double weight);
 
 /// @brief Renvoie les coordonnées d'un point dans un graphe.
 /// @param graph le graphe
-/// @param u l'identifiant du noeuf de départ
+/// @param u l'identifiant du noeud de départ
 Point Graph_getCoordinates(Graph* graph, int u);
 
 /// @brief Renvoie le poids d'un arc dans un graphe.

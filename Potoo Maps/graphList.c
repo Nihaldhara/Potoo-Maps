@@ -74,7 +74,7 @@ void Graph_print(Graph* graph)
         while (current->next)
         {
             current = current->next;
-            printf("    -Route de %f metres, vers l'intersection de coordonnees %lf %lf\n", current->arc.weight, graph->nodes[current->arc.target].coordinates.latitude, graph->nodes[current->arc.target].coordinates.longitude);
+            printf("    -Route de %f metres, vers l'intersection de coordonnees %lf %lf (noeud %d)\n", current->arc.weight, graph->nodes[current->arc.target].coordinates.latitude, graph->nodes[current->arc.target].coordinates.longitude, current->arc.target);
         }
     }
 }
@@ -128,7 +128,8 @@ void Graph_set(Graph* graph, int u, int v, double weight)
 
 Point Graph_getCoordinates(Graph* graph, int u)
 {
-    if (u < graph->size && u >= 0 && graph) return graph->nodes[u].coordinates;
+    if (u < graph->size && u >= 0 && graph) 
+        return graph->nodes[u].coordinates;
 }
 
 float Graph_get(Graph* graph, int u, int v)
