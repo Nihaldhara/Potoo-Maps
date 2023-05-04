@@ -24,6 +24,7 @@
 #define M_PI 3.1415926535897931
 #endif
 #define DEG_TO_RAD (M_PI / 180.0)
+#define RAD_TO_DEG (180.0/M_PI)
 
 INLINE char *Strdup(const char *src)
 {
