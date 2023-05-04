@@ -109,14 +109,24 @@ for (int i = 0; i < 156; i++)
 	}
 
 	rewind(file);
-	for (int i = 0; i < 156; i++)
-		fgets(segment, 4096, file);
-
 	while (!feof(file))
 	{
 		fgets(segment, 4096, file);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
+		cJSON* jType = cJSON_GetObjectItem(object, "type");
+
+		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
+		{
+			continue;
+		}
+
 		cJSON* jNodes = cJSON_GetObjectItem(object, "nodes");
+		Point lastCoordinates, currentCoordinates;
+		lastCoordinates.latitude = 0;
+		lastCoordinates.longitude = 0;
+		bool encountered = false;
+		double distance = 0.0f;
+		int lastIntersection = 0;
 		if (cJSON_IsArray(jNodes) == true)
 		{
 			cJSON* jNode = NULL;
@@ -124,22 +134,42 @@ for (int i = 0; i < 156; i++)
 			{
 				cJSON* jLat = cJSON_GetObjectItem(jNode, "lat");
 				cJSON* jLon = cJSON_GetObjectItem(jNode, "lon");
-				bool encountered = false;
-				double distance = 0.0f;
+
+				double dLat = atof(cJSON_GetStringValue(jLat));
+				double dLon = atof(cJSON_GetStringValue(jLon));
+
+				currentCoordinates.latitude = dLat;
+				currentCoordinates.longitude = dLon;
+
+				if (encountered)
+					distance += Distance(lastCoordinates, currentCoordinates);
 
 				for (int i = 0; i < count; i++)
 				{
-					Point current = Graph_getCoordinates(graph, i);
-					if (atof(cJSON_GetStringValue(jLat)) == current.latitude
-						&& atof(cJSON_GetStringValue(jLon)) == current.longitude)
+					if (!encountered
+						&& stockNodes[i].latitude == dLat
+						&& stockNodes[i].longitude == dLon)
+					{
 						encountered = true;
+						lastIntersection = i;
+					}
 
-					if (encountered
-						&& atof(cJSON_GetStringValue(jLat)) == current.latitude
-						&& atof(cJSON_GetStringValue(jLon)) == current.longitude)
+					else if (encountered
+						&& stockNodes[i].latitude == dLat
+						&& stockNodes[i].longitude == dLon)
+					{
+						Graph_set(graph, lastIntersection, i, distance);
+						Graph_set(graph, i, lastIntersection, distance);
 						distance = 0.0f;
+						encountered = false;
+					}
 				}
+
+				lastCoordinates.latitude = dLat;
+				lastCoordinates.longitude = dLon;
 			}
 		}
 	}
+
+	Graph_print(graph);
 }
