@@ -2,6 +2,7 @@
 
 #include "settings.h"
 #include "intTree.h"
+#include "map.h"
 
 //#define _GRAPH_MAT
 
@@ -15,7 +16,7 @@ typedef struct sArc
     int target;
 
     /// @brief Poids de l'arc.
-    float weight;
+    double weight;
 } Arc;
 
 //------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ void Graph_setCoordinates(Graph* graph, int u, Point coordinates);
 /// @param u l'identifiant du noeud de départ.
 /// @param v l'identifiant du noeud d'arrivée.
 /// @param weight le poids de l'arc.
-void Graph_set(Graph *graph, int u, int v, float weight);
+void Graph_set(Graph *graph, int u, int v, double weight);
 
 /// @brief Renvoie les coordonnées d'un point dans un graphe.
 /// @param graph le graphe

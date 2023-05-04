@@ -18,5 +18,5 @@ double Distance(Point a, Point b)
 	double cosab = cos(blon - alon);
 	
 	double res = ((sina * sinb) + (cosa * cosb * cosab));
-	return acos(res);
+	return (6378137 * acos(res));
 }

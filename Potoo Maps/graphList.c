@@ -1,5 +1,4 @@
 #include "graph.h"
-#include "map.h"
 
 #ifndef _GRAPH_MAT
 
@@ -70,12 +69,12 @@ void Graph_print(Graph* graph)
     printf("Nombre de noeuds : %d\n", graph->size);
     for (int i = 0; i < graph->size; i++)
     {
-        printf("Nombre d'arcs sortant du noeud %d : %d\n", i, graph->nodes[i].positiveValency);
+        printf("\nNombre de routes partant de l'intersection %lf - %lf : %d\n", graph->nodes[i].coordinates.latitude, graph->nodes[i].coordinates.longitude, graph->nodes[i].positiveValency);
         ArcList* current = graph->nodes[i].arcList;
         while (current->next)
         {
             current = current->next;
-            printf("    -Arc sortant de poids %f, ciblant le noeud d'indice %d\n", current->arc.weight, current->arc.target);
+            printf("    -Route sortante de longueur %f, ciblant l'intersection de coordonnees %lf - %lf\n", current->arc.weight, graph->nodes[current->arc.target].coordinates.latitude, graph->nodes[current->arc.target].coordinates.longitude);
         }
     }
 }
@@ -86,7 +85,7 @@ void Graph_setCoordinates(Graph* graph, int u, Point coordinates)
         graph->nodes[u].coordinates = coordinates;
 }
 
-void Graph_set(Graph* graph, int u, int v, float weight)
+void Graph_set(Graph* graph, int u, int v, double weight)
 {
     bool exists = false;
     ArcList* current = graph->nodes[u].arcList;
