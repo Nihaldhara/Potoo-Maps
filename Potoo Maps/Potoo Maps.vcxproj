@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Binary.c" />
     <ClCompile Include="cJSON.c" />
     <ClCompile Include="graph.c" />
     <ClCompile Include="graphList.c" />
@@ -33,6 +34,7 @@
     <ClCompile Include="uniStr.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Binary.h" />
     <ClInclude Include="cJSON.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="intList.h" />
