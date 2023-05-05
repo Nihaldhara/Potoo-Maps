@@ -191,7 +191,10 @@ Arc* Graph_getPredecessors(Graph* graph, int u, int* size)
 Arc* Graph_getSuccessors(Graph* graph, int u, int* size)
 {
     int count = 0;
-    Arc* successors = (Arc*)calloc(graph->size, sizeof(Arc));
+    *size = Graph_getPositiveValency(graph, u);
+    if (*size == 0)
+        return NULL;
+    Arc* successors = (Arc*)calloc(*size, sizeof(Arc));
     ArcList* current = graph->nodes[u].arcList;
     while (current->next)
     {
@@ -201,10 +204,8 @@ Arc* Graph_getSuccessors(Graph* graph, int u, int* size)
         successors[count].weight = current->arc.weight;
         count++;
     }
-    *size = count;
     if (count == 0)
         return NULL;
     return successors;
 }
-
 #endif
