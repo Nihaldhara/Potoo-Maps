@@ -27,3 +27,5 @@ BinHeap* BinNode_insert(BinHeap* heap, int id, double value);
 BinNode BinNode_remove(BinHeap* heap);
 
 void BinHeap_destroy(BinHeap* heap);
+
+void BinHeap_print(BinHeap* heap);

@@ -2,7 +2,6 @@
 #include <math.h>
 #include "Binary.h"
 
-#define INFINI 10000
 
 Path* Graph_shortestPath(Graph* graph, int start, int end)
 {
@@ -17,8 +16,12 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     //Initialisation des tableaux
     for (int i = 0; i < size; i++)
     {
-        distances[i] = INFINI;
+        distances[i] = INTMAX_MAX;
         predecessors[i] = -1;
+    }
+    if (end == start)
+    {
+        return NULL;
     }
     Graph_dijkstra(graph, start, end, predecessors, distances);
     Path* path = Graph_dijkstraGetPath(predecessors, distances, end);
@@ -86,7 +89,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             explored[u] = true;
-            if (distances[u] == INFINI)
+            if (distances[u] == INTMAX_MAX)
             {
                 continue;
             }
@@ -113,31 +116,38 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
         }
     }
 
-    //Si end est superieur � 0 on cherche le plus court chemin entre end et le start
+    //Si end est superieur a 0 on cherche le plus court chemin entre end et le start
     else if (end >= 0)
     {
         while (u != end)
         {
-            //On cherche le noeud pas explore avec la distance minimale
+            if (heap->size == 0)
+                break;
+
             BinNode node = BinNode_remove(heap);
             u = node.id;
             //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
+            if (u == end)
+                break;
+
             explored[u] = true;
-            if (distances[u] == INFINI)
-            {
+            if (distances[u] == INTMAX_MAX)
                 continue;
-            }
 
             //On cherche les plus courts chemin pour tous les voisins du noeud u
             Arc* arc = Graph_getSuccessors(graph, u, &nbvoisins);
             for (int j = 0; j < nbvoisins; j++)
             {
-                if ((distances[u] + Graph_get(graph, u, arc[j].target)) < distances[arc[j].target])
+                int v = arc[j].target;
+                float distance = Graph_get(graph, u, v);
+                if ((distances[u] + distance) < distances[v])
                 {
-                    predecessors[arc[j].target] = u;
-                    distances[arc[j].target] = distances[u] + Graph_get(graph, u, arc[j].target);
-                    BinNode_insert(heap, arc[j].target, distances[arc[j].target]);
+                    predecessors[v] = u;
+                    distances[v] = distances[u] + distance;
+                    BinNode_insert(heap, v, distances[v]);
+                    BinHeap_print(heap);
+                    printf("%d, %d\n", v, u);
                 }
             }
             free(arc);
@@ -157,13 +167,16 @@ Path* Graph_dijkstraGetPath(int* predecessors, float* distances, int end)
     int current = end;
 
     Path* path = Path_create(end);
+
+    current = predecessors[current];
     //Tant que le noeud current n'est pas le noeud de start on continue a inserer dans le chemin
-    while ((current >= 0))
+    while ((current) && (current >= 0))
     {
         Path_insertFirst(path, current, 0);
         current = predecessors[current];
     }
     //Path_insertFirst(path, current, 0);
+
     //La distance de path est la distance entre la fin et le d�but
     path->distance = distances[end];
     return path;
