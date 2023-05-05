@@ -2,7 +2,7 @@
 #include <math.h>
 #include "Binary.h"
 
-#define INFINI 10000
+//#define INFINI 10000
 
 Path* Graph_shortestPath(Graph* graph, int start, int end)
 {
@@ -17,7 +17,7 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     //Initialisation des tableaux
     for (int i = 0; i < size; i++)
     {
-        distances[i] = INFINI;
+        distances[i] = INTMAX_MAX;
         predecessors[i] = -1;
     }
     Graph_dijkstra(graph, start, end, predecessors, distances);
@@ -86,7 +86,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             explored[u] = true;
-            if (distances[u] == INFINI)
+            if (distances[u] == INTMAX_MAX)
             {
                 continue;
             }
@@ -124,7 +124,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             explored[u] = true;
-            if (distances[u] == INFINI)
+            if (distances[u] == INTMAX_MAX)
             {
                 continue;
             }
