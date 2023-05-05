@@ -124,16 +124,15 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             if (heap->size == 0)
                 break;
 
-            BinNode node = BinNode_remove(heap);
-            u = node.id;
-            //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
+            /*BinNode node = BinNode_remove(heap);
+            u = node.id;*/
+            u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             if (u == end)
                 break;
 
             explored[u] = true;
-            if (distances[u] == INFINI)
-            {
+            if (distances[u] == INTMAX_MAX)
                 continue;
 
             //On cherche les plus courts chemin pour tous les voisins du noeud u
@@ -147,15 +146,13 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
                     predecessors[v] = u;
                     distances[v] = distances[u] + distance;
                     BinNode_insert(heap, v, distances[v]);
-                    BinHeap_print(heap);
-                    printf("%d, %d\n", v, u);
                 }
             }
             free(arc);
         }
+        BinHeap_destroy(heap);
+        free(explored);
     }
-    BinHeap_destroy(heap);
-    free(explored);
 }
 
 Path* Graph_dijkstraGetPath(int* predecessors, float* distances, int end)
@@ -171,7 +168,7 @@ Path* Graph_dijkstraGetPath(int* predecessors, float* distances, int end)
 
     current = predecessors[current];
     //Tant que le noeud current n'est pas le noeud de start on continue a inserer dans le chemin
-    while ((current) && (current >= 0))
+    while (current >= 0)
     {
         Path_insertFirst(path, current, 0);
         current = predecessors[current];
@@ -183,7 +180,7 @@ Path* Graph_dijkstraGetPath(int* predecessors, float* distances, int end)
     return path;
 }
 
-Path* Graph_enumPathRec(Graph* graph, Path* currPath, int start, int end)
+/*Path* Graph_enumPathRec(Graph* graph, Path* currPath, int start, int end)
 {
     if (start == end)return currPath;
     Path* best = NULL;
@@ -215,4 +212,4 @@ Path* Graph_enumPath(Graph* graph, int start, int end)
     Path* path = Path_create(start);
     path = Graph_enumPathRec(graph, path, start, end);
     return path;
-}
+}*/

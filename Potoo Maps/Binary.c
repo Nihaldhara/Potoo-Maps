@@ -53,13 +53,9 @@ BinHeap* BinNode_insert(BinHeap* heap, int id, double value)
 	assert((id >= 0) && (id < heap->capacity));
 
 	BinNode node = BinNode_create(heap, id, value);
-	BinHeap_print(heap);
 	heap->tab[heap->size] = node;
-	//BinHeap_print(heap);
 	BinHeap_percolateup(heap);
-	//BinHeap_print(heap);
 	heap->size++;
-	BinHeap_print(heap);
 	return heap;
 }
 
@@ -95,13 +91,6 @@ void BinHeap_percolatedown(BinHeap* heap)
 
 BinNode BinNode_remove(BinHeap* heap)
 {
-	if (heap->size == 0)
-	{
-		printf("########################\n");
-		printf("#    Gros Probleme!    #\n");
-		printf("########################\n\n\n");
-		assert(0);
-	}
 	assert(heap);
 
 	BinNode res = heap->tab[0];

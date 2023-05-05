@@ -4,6 +4,7 @@
 #include "cJSON.h"
 #include "path.h"
 #include "graph.h"
+#include "ShortestPath.h"
 
 /// @brief
 /// param in a, 1er point
@@ -16,9 +17,14 @@ double Distance(Point a, Point b);
 /// param in stockNodes, tous les points de la region
 /// param in count, nombre de points de la region
 /// return le point le plus proche de start
-Point Get_NearestPoint(Point start, Point* stockNodes, int count);
+int Get_NearestPoint(Point start, Point* stockNodes, int count);
 
-void inputCoordinates(Point* coordinates, int count, Point* start, Point* end);
+/// @brief Récupère des coordonnées entrées par l'utilisateur pour les transformer en points
+/// @param coordinates le tableau de coordonnées pour chaque intersection
+/// @param count le nombre total d'intersections
+/// @param start le point de départ du trajet
+/// @param end le point d'arrivée du trajet
+void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, int* idStart, int* idEnd);
 
 /// @brief Parse le fichier pour en tirer uniquement les intersections.
 /// Renvoie le nombre total d'intersections trouvées

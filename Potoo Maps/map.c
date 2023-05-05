@@ -23,7 +23,7 @@ double Distance(Point a, Point b)
 }
 
 
-Point Get_NearestPoint(Point start, Point* stockNodes, int count)
+int Get_NearestPoint(Point start, Point* stockNodes, int count)
 {
 	double distance = INTMAX_MAX;
 	int res = 0;
@@ -36,25 +36,26 @@ Point Get_NearestPoint(Point start, Point* stockNodes, int count)
 			res = i;
 		}
 	}
-	return stockNodes[res];
+
+	return res;
 }
 
-void inputCoordinates(Point* coordinates, int count, Point* start, Point* end)
+void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, int* idStart, int* idEnd)
 {
 	printf("\n\n\nEntrez ici les coordonnees de votre point de depart : \n\n");
-	printf("Longitude : ");
-	scanf("%lf", &start->latitude);
 	printf("Latitude : ");
+	scanf("%lf", &start->latitude);
+	printf("Longitude : ");
 	scanf("%lf", &start->longitude);
 	printf("\n\nPuis les coordonnees de votre point d'arrivee : \n\n");
-	printf("Longitude : ");
-	scanf("%lf", &end->latitude);
 	printf("Latitude : ");
+	scanf("%lf", &end->latitude);
+	printf("Longitude : ");
 	scanf("%lf", &end->longitude);
 	printf("\n\n\n");
 
-	*start = Get_NearestPoint(*start, coordinates, count);
-	*end = Get_NearestPoint(*end, coordinates, count);
+	*idStart = Get_NearestPoint(*start, coordinates, count);
+	*idEnd = Get_NearestPoint(*end, coordinates, count);
 }
 
 int parsingFile(FILE* file, Point* coordinates)
@@ -214,7 +215,7 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 
 int findPath(Graph* graph, int idA, int idB, Point* route)
 {
-	Path* path = Graph_shortestPath(graph, 148, 14);
+	Path* path = Graph_shortestPath(graph, idA, idB);
 	IntListNode* current = path->list->sentinel.next;
 	int size = 0;
 	while (current != &path->list->sentinel)
