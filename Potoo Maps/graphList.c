@@ -55,7 +55,20 @@ Graph* Graph_create(int size)
 
 void Graph_destroy(Graph* graph)
 {
-
+    if (graph == NULL) return;
+    for (int i = 0; i < graph->size; i++)
+    {
+        ArcList* current = graph->nodes[i].arcList;
+        ArcList* next; 
+        while (current)
+        {
+            next = current->next;
+            free(current);
+            current = next;
+        }
+    }
+    free(graph->nodes);
+    free(graph);
 }
 
 int Graph_size(Graph* graph)
