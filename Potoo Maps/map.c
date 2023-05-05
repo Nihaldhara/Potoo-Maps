@@ -1,6 +1,6 @@
 #include "map.h"
 
-#define CHARGEMENT 80
+#define CHARGEMENT 100
 #define TERRE 6378137
 
 double Distance(Point a, Point b)
@@ -66,14 +66,14 @@ int parsingFile(FILE* file, Point* coordinates)
 	fseek(file, 0, SEEK_END);
 	total = ftell(file);
 	rewind(file);
-	total /= CHARGEMENT;
-	printf("Lecture du fichier en cours\n"); // La barre de chargement doit etre �gal a n-1, n �tait le diviseur de "total"
-	for (int i = 0; i < CHARGEMENT - 1; i++)
+	float tmp = (float)total / (float)CHARGEMENT;
+	printf("Lecture du fichier en cours\n");
+	for (int i = 0; i < CHARGEMENT; i++)
 		printf("-");
 	printf("\n");
 
 	//Boucle de lecture et stockage des diff�rentes intersections
-	int count = 0;
+	int count = 0, avancement = 0;
 	char* segment = calloc(4096, sizeof(char));
 	int* tempOccurrences = (int*)calloc(10000, sizeof(int));
 	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));
@@ -91,9 +91,10 @@ int parsingFile(FILE* file, Point* coordinates)
 
 		//Calcul du pourcentage d'avancement de la barre de chargement
 		atm = ftell(file);
-		if ((float)atm >= ((float)previous + (float)total))
+		if ((float)atm >= ((float)previous + tmp))
 		{
-			previous = atm;
+			avancement++;
+			previous = avancement*tmp;
 			printf("#");
 		}
 
@@ -220,6 +221,7 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 		}
 		cJSON_Delete(object);
 	}
+
 	free(segment);
 }
 
@@ -252,4 +254,41 @@ void writeOutput(Point* route, int size)
 			fprintf(output, "					[%lf, %lf],\n", route[i].longitude, route[i].latitude);
 	}
 	fprintf(output, eFile);
+}
+
+
+
+void writeTraitement(Graph* graph, int count)
+{
+	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.geojson","wb");
+	fprintf(pretraitement, "%d", count);
+	for (int i = 0; i < count; i++)
+	{
+		for (int j = 0; j < count; j++)
+		{
+			float poids = Graph_get(graph, i, j);
+			if (poids >= 0)
+			{
+				fprintf(pretraitement,"%f %d %d", poids, i , j);
+			}
+		}
+	}
+	fclose(pretraitement);
+}
+
+Graph* readTraitement()
+{
+	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.geojson","rb");
+	int count, u ,v ;
+	float w;
+	fscanf(pretraitement, "%d", &count);
+
+	Graph* graph = Graph_create(count);
+	for (int i = 0; i < count; i++)
+	{
+		fscanf(pretraitement, "%f %d %d", &w, &u, &v);
+		Graph_set(graph, u, v, w);
+	}
+	fclose(pretraitement);
+	return graph;
 }
