@@ -91,7 +91,7 @@ int main()
 
 	//Rectifications parce que je sais pas coder proprement
 	int* newOccurrences = (int*)calloc(count, sizeof(int));
-	Point* newCoordinates = (Point*)calloc(count, sizeof(Point));
+	Point* coordinates = (Point*)calloc(count, sizeof(Point));
 	int realCount = 0;
 	printf("\n");
 	for (int i = 0; i < count; i++)
@@ -100,7 +100,7 @@ int main()
 		{
 			//printf("%d | %lf %lf\n", occurrences[i], stockNodes[i].latitude, stockNodes[i].longitude);
 			newOccurrences[realCount] = occurrences[i];
-			newCoordinates[realCount++] = stockNodes[i];
+			coordinates[realCount++] = stockNodes[i];
 		}
 	}
 
@@ -108,7 +108,7 @@ int main()
 	Graph* graph = Graph_create(realCount);
 	for (int i = 0; i < realCount; i++)
 	{
-		Graph_setCoordinates(graph, i, newCoordinates[i]);
+		Graph_setCoordinates(graph, i, coordinates[i]);
 	}
 
 	rewind(file);
@@ -149,22 +149,22 @@ int main()
 
 				for (int i = 0; i < count; i++)
 				{
-					if (!encountered
-						&& newCoordinates[i].latitude == dLat
-						&& newCoordinates[i].longitude == dLon)
-					{
-						encountered = true;
-						lastIntersection = i;
-					}
-
-					else if (encountered
-						&& newCoordinates[i].latitude == dLat
-						&& newCoordinates[i].longitude == dLon)
+					if (encountered
+						&& coordinates[i].latitude == dLat
+						&& coordinates[i].longitude == dLon)
 					{
 						Graph_set(graph, lastIntersection, i, distance);
 						Graph_set(graph, i, lastIntersection, distance);
 						distance = 0.0f;
 						encountered = false;
+					}
+
+					if (!encountered
+						&& coordinates[i].latitude == dLat
+						&& coordinates[i].longitude == dLon)
+					{
+						encountered = true;
+						lastIntersection = i;
 					}
 				}
 
@@ -177,7 +177,7 @@ int main()
 	Graph_print(graph);
 
 	//Recherche du plus court chemin
-	Path* path = Graph_shortestPath(graph, 0, 463);
+	Path* path = Graph_shortestPath(graph, 148, 14);
 	IntListNode* current = path->list->sentinel.next;
 	Point* res = (Point*)calloc(path->list->nodeCount, sizeof(Point));
 	int k = 0;
@@ -195,7 +195,10 @@ int main()
 	fprintf(test, bFile);
 	for (int i = 0; i < k; i++)
 	{
-		fprintf(test, "					[%lf, %lf],\n", res[k].longitude, res[k].latitude);
+		if(i+1 == k)
+			fprintf(test, "					[%lf, %lf]\n", res[i].longitude, res[i].latitude);
+		else
+			fprintf(test, "					[%lf, %lf],\n", res[i].longitude, res[i].latitude);
 	}
 	fprintf(test, eFile);
 }

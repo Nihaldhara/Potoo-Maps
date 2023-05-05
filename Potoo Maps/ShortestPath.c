@@ -155,22 +155,16 @@ Path* Graph_dijkstraGetPath(int* predecessors, float* distances, int end)
         return NULL;
 
     //On regarde quel est le noeud de d�part
-    int start = 0, current = end;
-    while (predecessors[start] != -1)
-        start++;
+    int current = end;
 
     Path* path = Path_create(end);
-    if (!path)
-        return NULL;
-
-    current = predecessors[current];
     //Tant que le noeud current n'est pas le noeud de start on continue a inserer dans le chemin
-    while ((current) && (current != start))
+    while ((current >= 0))
     {
         Path_insertFirst(path, current, 0);
         current = predecessors[current];
     }
-    Path_insertFirst(path, current, 0);
+    //Path_insertFirst(path, current, 0);
     //La distance de path est la distance entre la fin et le d�but
     path->distance = distances[end];
     return path;
