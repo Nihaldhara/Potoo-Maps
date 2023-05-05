@@ -1,6 +1,7 @@
 #include "map.h"
 
 #define CHARGEMENT 80
+#define TERRE 6378137
 
 double Distance(Point a, Point b)
 {
@@ -19,7 +20,7 @@ double Distance(Point a, Point b)
 	double cosab = cos(blon - alon);
 	
 	double res = ((sina * sinb) + (cosa * cosb * cosab));
-	return (6378137 * acos(res));
+	return (TERRE * acos(res));
 }
 
 
@@ -64,13 +65,13 @@ int parsingFile(FILE* file, Point* coordinates)
 	fseek(file, 0, SEEK_END);
 	total = ftell(file);
 	rewind(file);
-	(float)total /= CHARGEMENT;
-	printf("Lecture du fichier en cours\n"); // La barre de chargement doit etre égal a n-1, n était le diviseur de "total"
+	total /= CHARGEMENT;
+	printf("Lecture du fichier en cours\n"); // La barre de chargement doit etre ï¿½gal a n-1, n ï¿½tait le diviseur de "total"
 	for (int i = 0; i < CHARGEMENT - 1; i++)
 		printf("-");
 	printf("\n");
 
-	//Boucle de lecture et stockage des différentes intersections
+	//Boucle de lecture et stockage des diffï¿½rentes intersections
 	int count = 0;
 	char* segment = calloc(4096, sizeof(char));
 	int* tempOccurrences = (int*)calloc(10000, sizeof(int));
@@ -83,12 +84,12 @@ int parsingFile(FILE* file, Point* coordinates)
 
 		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
 		{
+			cJSON_Delete(object);
 			continue;
 		}
 
 		//Calcul du pourcentage d'avancement de la barre de chargement
 		atm = ftell(file);
-		float res = (float)atm / (float)total;
 		if ((float)atm >= ((float)previous + (float)total))
 		{
 			previous = atm;
@@ -127,6 +128,7 @@ int parsingFile(FILE* file, Point* coordinates)
 				}
 			}
 		}
+		cJSON_Delete(object);
 	}
 
 	//Rectifications parce que je sais pas coder proprement
@@ -141,7 +143,11 @@ int parsingFile(FILE* file, Point* coordinates)
 			coordinates[finalCount++] = tempCoordinates[i];
 		}
 	}
-
+	
+	free(tempCoordinates);
+	free(tempOccurrences);
+	free(segment);
+	free(occurrences);
 	return finalCount;
 }
 
@@ -157,6 +163,7 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 
 		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
 		{
+			cJSON_Delete(object);
 			continue;
 		}
 
@@ -207,9 +214,12 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 
 				lastCoordinates.latitude = dLat;
 				lastCoordinates.longitude = dLon;
+
 			}
 		}
+		cJSON_Delete(object);
 	}
+	free(segment);
 }
 
 int findPath(Graph* graph, int idA, int idB, Point* route)

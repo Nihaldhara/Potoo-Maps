@@ -9,11 +9,16 @@
 
 #define CHARGEMENT 80
 
+//C'est plus rapide de faire un quadtree mais c'est rapide en dictionnaire quand meme
+//La difference est negligeable
+
+
+
 int main()
 {
-	//Création du graphe
-	//   -Tri des différents points :
-	int count = 0, size = 0;
+	//Crï¿½ation du graphe
+	//   -Tri des diffï¿½rents points :
+	int count = 0;
 	int* occurrences = (int*)calloc(10000, sizeof(int));
 	Point* coordinates = (Point*)calloc(10000, sizeof(Point));
 	Point startingPoint, endingPoint;
@@ -29,11 +34,20 @@ int main()
 	}
 	graphMap(graph, count, coordinates, file);
 
-	Graph_print(graph);
+	//Graph_print(graph);
 
 	Point* route = (Point*)calloc(count, sizeof(Point));
 	inputCoordinates(coordinates, count, &startingPoint, &endingPoint);
 	printf("%lf, %lf\n %lf, %lf\n", startingPoint.longitude, startingPoint.latitude, endingPoint.longitude, endingPoint.latitude);
+
+
+	//Liberation de memoire
+	free(coordinates);
+	free(occurrences);
+	free(route);
+	fclose(file);
+	fclose(output);
+	Graph_destroy(graph);
 	//size = findPath(graph, 15, 356, route);
 
 	//writeOutput(route, size);
