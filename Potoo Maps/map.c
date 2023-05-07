@@ -55,6 +55,12 @@ void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, i
 	scanf("%lf", &end->longitude);
 	printf("\n\n\n");
 
+	/*
+	start->latitude = 48.080862238743386;
+	start->longitude = -0.7481967545409075;
+	end->latitude = 48.09371262498784;
+	end->longitude = -0.7484873470449195;
+	*/
 	*idStart = Get_NearestPoint(*start, coordinates, count);
 	*idEnd = Get_NearestPoint(*end, coordinates, count);
 }
@@ -228,6 +234,12 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 int findPath(Graph* graph, int idA, int idB, Point* route)
 {
 	Path* path = Graph_shortestPath(graph, idA, idB);
+	if (!path)
+	{		
+		printf("il n'y a pas de Path");
+		Path_destroy(path);
+		return 0;
+	}
 	IntListNode* current = path->list->sentinel.next;
 	int size = 0;
 	while (current != &path->list->sentinel)
@@ -235,7 +247,7 @@ int findPath(Graph* graph, int idA, int idB, Point* route)
 		route[size++] = Graph_getCoordinates(graph, current->value);
 		current = current->next;
 	}
-
+	Path_destroy(path);
 	return size;
 }
 
@@ -254,14 +266,15 @@ void writeOutput(Point* route, int size)
 			fprintf(output, "					[%lf, %lf],\n", route[i].longitude, route[i].latitude);
 	}
 	fprintf(output, eFile);
+	fclose(output);
 }
 
 
 
 void writeTraitement(Graph* graph, int count)
 {
-	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.geojson","wb");
-	fprintf(pretraitement, "%d", count);
+	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","wb");
+	fprintf(pretraitement, "%d\n", count);
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < count; j++)
@@ -269,7 +282,7 @@ void writeTraitement(Graph* graph, int count)
 			float poids = Graph_get(graph, i, j);
 			if (poids >= 0)
 			{
-				fprintf(pretraitement,"%f %d %d", poids, i , j);
+				fprintf(pretraitement,"%f %d %d\n", poids, i , j);
 			}
 		}
 	}
@@ -278,13 +291,13 @@ void writeTraitement(Graph* graph, int count)
 
 Graph* readTraitement()
 {
-	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.geojson","rb");
-	int count, u ,v ;
+	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","rb");
+	int count, u, v;
 	float w;
 	fscanf(pretraitement, "%d", &count);
 
 	Graph* graph = Graph_create(count);
-	for (int i = 0; i < count; i++)
+	while(!feof(pretraitement))
 	{
 		fscanf(pretraitement, "%f %d %d", &w, &u, &v);
 		Graph_set(graph, u, v, w);

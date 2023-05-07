@@ -8,7 +8,6 @@
 #include <stdio.h>
 
 //#define PRETRAITEMENT 
-#define CHARGEMENT 80
 
 int main()
 {
@@ -17,14 +16,13 @@ int main()
 	Point* coordinates = (Point*)calloc(10000, sizeof(Point));
 	Point startingPoint, endingPoint;
 	FILE* file = fopen("../Potoo Maps/esiea.geojson", "r");
-	FILE* output = fopen("../Potoo Maps/output.geojson","w");
-	
+	//FILE* output = fopen("../Potoo Maps/output.geojson","w");
+
 	count = parsingFile(file, coordinates);
 
 #ifdef PRETRAITEMENT
-
-		Graph* graph = readTraitement();
-#endif
+	Graph* graph = readTraitement();
+#endif // PRETRAITEMENT
 
 #ifndef PRETRAITEMENT
 	Graph* graph = Graph_create(count);
@@ -33,11 +31,11 @@ int main()
 		Graph_setCoordinates(graph, i, coordinates[i]);
 	}
 	graphMap(graph, count, coordinates, file);
-	//writeTraitement(graph, count);
-#endif
-	
+	writeTraitement(graph, count);
+#endif // !PRETRAITEMENT
 
-	Graph_print(graph);
+
+	//Graph_print(graph);
 	
 	Point* route = (Point*)calloc(count, sizeof(Point));
 	inputCoordinates(coordinates, count, &startingPoint, &endingPoint, &idStart, &idEnd);
@@ -49,11 +47,12 @@ int main()
 	//Liberation de memoire
 	free(coordinates);
 	free(occurrences);
-	free(route);
+	
 	fclose(file);
-	fclose(output);
+
 	Graph_destroy(graph);
 	//size = findPath(graph, 15, 356, route);
 
 	writeOutput(route, size);
+	free(route);
 }
