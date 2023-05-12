@@ -32,7 +32,6 @@ int main()
 	Point* route = (Point*)calloc(count, sizeof(Point));
 	inputCoordinates(coordinates, count, &startingPoint, &endingPoint, &idStart, &idEnd);
 	size = findPath(graph, idStart, idEnd, route);
-	inputCoordinates(coordinates, count, &startingPoint, &endingPoint);
 	printf("%lf, %lf\n %lf, %lf\n", startingPoint.longitude, startingPoint.latitude, endingPoint.longitude, endingPoint.latitude);
 
 
