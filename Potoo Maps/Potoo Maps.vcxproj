@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Binary.c" />
     <ClCompile Include="cJSON.c" />
+    <ClCompile Include="dict.c" />
     <ClCompile Include="graph.c" />
     <ClCompile Include="graphList.c" />
     <ClCompile Include="graphMat.c" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ClInclude Include="Binary.h" />
     <ClInclude Include="cJSON.h" />
+    <ClInclude Include="dict.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="intList.h" />
     <ClInclude Include="intTree.h" />
@@ -50,6 +52,9 @@
     <None Include="communes.csv" />
     <None Include="communes_adjacentes.csv" />
     <None Include="esiea.geojson" />
+    <None Include="france.geojson" />
+    <None Include="laval.geojson" />
+    <None Include="pays_de_la_loire.geojson" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

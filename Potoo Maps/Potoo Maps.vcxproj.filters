@@ -54,6 +54,9 @@
     <ClCompile Include="Binary.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h">
@@ -89,6 +92,9 @@
     <ClInclude Include="Binary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dict.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="communes.csv">
@@ -98,6 +104,15 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="esiea.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="france.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="laval.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pays_de_la_loire.geojson">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

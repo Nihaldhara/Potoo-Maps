@@ -30,8 +30,10 @@ int main()
 	{
 		Graph_setCoordinates(graph, i, coordinates[i]);
 	}
+
 	graphMap(graph, count, coordinates, file);
 	writeTraitement(graph, count);
+
 #endif // !PRETRAITEMENT
 	
 	Point* route = (Point*)calloc(count, sizeof(Point));
