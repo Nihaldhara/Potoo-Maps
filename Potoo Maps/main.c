@@ -33,16 +33,11 @@ int main()
 	graphMap(graph, count, coordinates, file);
 	writeTraitement(graph, count);
 #endif // !PRETRAITEMENT
-
-
-	//Graph_print(graph);
 	
 	Point* route = (Point*)calloc(count, sizeof(Point));
 	inputCoordinates(coordinates, count, &startingPoint, &endingPoint, &idStart, &idEnd);
 	size = findPath(graph, idStart, idEnd, route);
-	//inputCoordinates(coordinates, count, &startingPoint, &endingPoint);
-	printf("%lf, %lf\n %lf, %lf\n", startingPoint.longitude, startingPoint.latitude, endingPoint.longitude, endingPoint.latitude);
-
+	//printf("%lf, %lf\n %lf, %lf\n", startingPoint.longitude, startingPoint.latitude, endingPoint.longitude, endingPoint.latitude);
 
 	//Liberation de memoire
 	free(coordinates);

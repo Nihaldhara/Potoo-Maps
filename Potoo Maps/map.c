@@ -293,13 +293,13 @@ Graph* readTraitement()
 {
 	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","rb");
 	int count, u, v;
-	float w;
-	fscanf(pretraitement, "%d", &count);
+	double w;
+	int scan = fscanf(pretraitement, "%d", &count);
 
 	Graph* graph = Graph_create(count);
-	while(!feof(pretraitement))
+	while(scan)
 	{
-		fscanf(pretraitement, "%f %d %d", &w, &u, &v);
+		scan = fscanf(pretraitement, "%f %d %d", &w, &u, &v);
 		Graph_set(graph, u, v, w);
 	}
 	fclose(pretraitement);
