@@ -100,5 +100,14 @@
     <None Include="esiea.geojson">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="france.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="laval.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pays_de_la_loire.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -132,8 +132,8 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
 
             BinNode node = BinNode_remove(heap);
             u = node.id;
-            printf("%d Retirer\n\n", u);
-            BinHeap_print(heap);
+            //printf("%d Retirer\n\n", u);
+            //BinHeap_print(heap);
             //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             if (u == end)
@@ -155,11 +155,11 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
                     predecessors[v] = u;
                     distances[v] = distances[u] + distance;
                     BinNode_insert(heap, v, distances[v]);
-                    printf("%d : %f\n", v, distances[v]);
+                   // printf("%d : %f\n", v, distances[v]);
                 }
             }
-            printf("Ajouter\n");
-            BinHeap_print(heap);
+            //printf("Ajouter\n");
+            //BinHeap_print(heap);
             printf("\n");
             free(arc);
         }

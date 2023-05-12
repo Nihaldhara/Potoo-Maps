@@ -79,29 +79,42 @@ int parsingFile(FILE* file, Point* coordinates)
 	printf("\n");
 
 	//Boucle de lecture et stockage des diff�rentes intersections
-	int count = 0, avancement = 0;
+	int count = 0, avancement = 0, tmp2;
 	char* segment = calloc(4096, sizeof(char));
 	int* tempOccurrences = (int*)calloc(10000, sizeof(int));
 	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));
-	while (!feof(file))
+	while (fgets(segment, 4096, file))
 	{
-		fgets(segment, 4096, file);
-		cJSON* object = cJSON_ParseWithLength(segment, 4096);
-		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
-		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
-		{
-			cJSON_Delete(object);
-			continue;
-		}
+		//faire une boucle infinie et break si fgets est nul
+		//Faire un strlength pour voir si on a pas un buffer trop petit 
+		// tester si Item c'est vraiment un string
+		//GetNumberValue pour eviter de faire un atof 
 
 		//Calcul du pourcentage d'avancement de la barre de chargement
 		atm = ftell(file);
 		if ((float)atm >= ((float)previous + tmp))
 		{
 			avancement++;
-			previous = avancement*tmp;
+			previous = avancement * tmp;
 			printf("#");
+		}
+
+		tmp2 = strnlen(segment, 4096);
+		//printf("%d\n", tmp2);
+		cJSON* object = cJSON_ParseWithLength(segment, 4096);
+		cJSON* jType = cJSON_GetObjectItem(object, "type");
+
+		if (!cJSON_IsString(jType))
+		{
+			cJSON_Delete(object);
+			continue;
+		}
+
+		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
+		{
+			cJSON_Delete(object);
+			continue;
 		}
 
 		cJSON* jNodes = cJSON_GetObjectItem(object, "nodes");
@@ -113,8 +126,19 @@ int parsingFile(FILE* file, Point* coordinates)
 				cJSON* jLat = cJSON_GetObjectItem(jNode, "lat");
 				cJSON* jLon = cJSON_GetObjectItem(jNode, "lon");
 
-				double dLat = atof(cJSON_GetStringValue(jLat));
-				double dLon = atof(cJSON_GetStringValue(jLon));
+				if (!cJSON_IsString(jLat))
+				{
+					cJSON_Delete(object);
+					continue;
+				}
+
+				if (!cJSON_IsString(jLon))
+				{
+					cJSON_Delete(object);
+					continue;
+				}
+				double dLat = cJSON_GetNumberValue(jLat);
+				double dLon = cJSON_GetNumberValue(jLon);
 
 				bool found = false;
 				for (int j = 0; j < count; j++)
@@ -122,7 +146,7 @@ int parsingFile(FILE* file, Point* coordinates)
 					if (dLat == tempCoordinates[j].latitude
 						&& dLon == tempCoordinates[j].longitude)
 					{
-						tempOccurrences[j]++;
+						tempOccurrences[j]++;	
 						found = true;
 						break;
 					}
@@ -138,7 +162,10 @@ int parsingFile(FILE* file, Point* coordinates)
 		}
 		cJSON_Delete(object);
 	}
-
+//soit on fait un realloc de 2 x la taille
+//soit on fait un dictionnaire
+// 
+// 
 	//Rectifications parce que je sais pas coder proprement
 	int finalCount = 0;
 	int* occurrences = (int*)calloc(count, sizeof(int));
@@ -169,6 +196,12 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
+		if (!cJSON_IsString(jType))
+		{
+			cJSON_Delete(object);
+			continue;
+		}
+
 		if (strcmp(cJSON_GetStringValue(jType), "way") != 0)
 		{
 			cJSON_Delete(object);
@@ -190,8 +223,20 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 				cJSON* jLat = cJSON_GetObjectItem(jNode, "lat");
 				cJSON* jLon = cJSON_GetObjectItem(jNode, "lon");
 
-				double dLat = atof(cJSON_GetStringValue(jLat));
-				double dLon = atof(cJSON_GetStringValue(jLon));
+				if (!cJSON_IsString(jLat))
+				{
+					cJSON_Delete(object);
+					continue;
+				}
+
+				if (!cJSON_IsString(jLon))
+				{
+					cJSON_Delete(object);
+					continue;
+				}
+
+				double dLat = cJSON_GetNumberValue(jLat);
+				double dLon = cJSON_GetNumberValue(jLon);
 
 				currentCoordinates.latitude = dLat;
 				currentCoordinates.longitude = dLon;
@@ -275,6 +320,7 @@ void writeTraitement(Graph* graph, int count)
 {
 	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","wb");
 	fprintf(pretraitement, "%d\n", count);
+
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < count; j++)
@@ -292,14 +338,17 @@ void writeTraitement(Graph* graph, int count)
 Graph* readTraitement()
 {
 	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","rb");
+	if (!pretraitement)
+		return NULL;
 	int count, u, v;
+	long scan;
 	float w;
-	fscanf(pretraitement, "%d", &count);
+	scan = fscanf(pretraitement, "%d", &count);
 
 	Graph* graph = Graph_create(count);
-	while(!feof(pretraitement))
+	while(fscanf(pretraitement, "%f %d %d", &w, &u, &v))
 	{
-		fscanf(pretraitement, "%f %d %d", &w, &u, &v);
+		printf("%d, %d, %f\n", u, v, w);
 		Graph_set(graph, u, v, w);
 	}
 	fclose(pretraitement);

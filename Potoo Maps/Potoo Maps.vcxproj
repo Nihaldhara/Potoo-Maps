@@ -50,6 +50,9 @@
     <None Include="communes.csv" />
     <None Include="communes_adjacentes.csv" />
     <None Include="esiea.geojson" />
+    <None Include="france.geojson" />
+    <None Include="laval.geojson" />
+    <None Include="pays_de_la_loire.geojson" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
