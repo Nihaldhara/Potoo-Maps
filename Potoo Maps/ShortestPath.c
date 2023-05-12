@@ -11,7 +11,10 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     float* distances = (float*)calloc(size, sizeof(float));
 
     if ((!predecessors) || (!distances))
+    {
+        printf("Il y a un probleme dans les predecesseurs");
         return NULL;
+    }
 
     //Initialisation des tableaux
     for (int i = 0; i < size; i++)
@@ -21,10 +24,13 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     }
     if (end == start)
     {
+        free(predecessors);
+        free(distances);
         return NULL;
     }
     Graph_dijkstra(graph, start, end, predecessors, distances);
     Path* path = Graph_dijkstraGetPath(predecessors, distances, end);
+    
     free(predecessors);
     free(distances);
     return path;
@@ -124,9 +130,11 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             if (heap->size == 0)
                 break;
 
-            /*BinNode node = BinNode_remove(heap);
-            u = node.id;*/
-            u = Graph_dijkstra_firstnode(graph, u, explored, distances);
+            BinNode node = BinNode_remove(heap);
+            u = node.id;
+            printf("%d Retirer\n\n", u);
+            BinHeap_print(heap);
+            //u = Graph_dijkstra_firstnode(graph, u, explored, distances);
 
             if (u == end)
                 break;
@@ -135,6 +143,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             if (distances[u] == INTMAX_MAX)
                 continue;
 
+        
             //On cherche les plus courts chemin pour tous les voisins du noeud u
             Arc* arc = Graph_getSuccessors(graph, u, &nbvoisins);
             for (int j = 0; j < nbvoisins; j++)
@@ -146,8 +155,12 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
                     predecessors[v] = u;
                     distances[v] = distances[u] + distance;
                     BinNode_insert(heap, v, distances[v]);
+                    printf("%d : %f\n", v, distances[v]);
                 }
             }
+            printf("Ajouter\n");
+            BinHeap_print(heap);
+            printf("\n");
             free(arc);
         }
         BinHeap_destroy(heap);
