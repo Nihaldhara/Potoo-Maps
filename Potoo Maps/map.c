@@ -18,7 +18,6 @@ double Distance(Point a, Point b)
 	double cosb = cos(blat);
 	//Le cosinus des longitudes
 	double cosab = cos(blon - alon);
-	
 	double res = ((sina * sinb) + (cosa * cosb * cosab));
 	return (TERRE * acos(res));
 }
@@ -41,7 +40,7 @@ int Get_NearestPoint(Point start, Point* stockNodes, int count)
 }
 
 void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, int* idStart, int* idEnd)
-{/*
+{
 	printf("\n\n\nEntrez ici les coordonnees de votre point de depart : \n\n");
 	printf("Latitude : ");
 	scanf("%lf", &start->latitude);
@@ -52,13 +51,13 @@ void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, i
 	scanf("%lf", &end->latitude);
 	printf("Longitude : ");
 	scanf("%lf", &end->longitude);
-	printf("\n\n\n");*/
-
+	printf("\n\n\n");
+	/*
 	start->latitude = 48.09143457156984;
 	start->longitude = -0.7677298616803988;
 	end->latitude = 48.076051198707674;
 	end->longitude = -0.7528898030895016;
-	
+	*/
 	*idStart = Get_NearestPoint(*start, coordinates, count);
 	*idEnd = Get_NearestPoint(*end, coordinates, count);
 }
@@ -77,7 +76,7 @@ int parsingFile(FILE* file, Point* coordinates)
 	printf("\n");
 
 	//Boucle de lecture et stockage des diff�rentes intersections
-	int count = 0, avancement = 0, tmp2;
+	int count = 0, avancement = 0;
 	char* segment = calloc(4096, sizeof(char));
 	int* tempOccurrences = (int*)calloc(10000, sizeof(int));
 	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));
@@ -98,8 +97,6 @@ int parsingFile(FILE* file, Point* coordinates)
 			printf("#");
 		}
 
-		tmp2 = strnlen(segment, 4096);
-		//printf("%d\n", tmp2);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
