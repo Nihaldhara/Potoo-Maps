@@ -14,6 +14,7 @@
 
 #define AssertNew(ptr) { if (ptr == NULL) { assert(false); abort(); } }
 
+
 #ifdef _WIN32
 #  define INLINE inline
 #else

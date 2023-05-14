@@ -162,14 +162,14 @@ int Dict_Insert(Dict *dict, Point key, int value)
     DictNode *node = NULL;
     if (Dict_Find(dict, key, &node))
     {
-        // La donnée est déjà présente dans l'arbre
+        // La donnÃ©e est dÃ©jÃ  prÃ©sente dans l'arbre
         int prevValue = node->pair.value;
         node->pair.value++;
 
         return prevValue;
     }
 
-    // Crée le nouveau noeud
+    // Crï¿½e le nouveau noeud
     DictNode *newNode = DictNode_New(key, value);
     if (coordinatescmp(key, node->pair.key) < 0)
     {
@@ -181,7 +181,7 @@ int Dict_Insert(Dict *dict, Point key, int value)
     }
     dict->size++;
 
-    // Equilibre l'arbre à partir du parent du nouveau noeud
+    // Equilibre l'arbre ï¿½ partir du parent du nouveau noeud
     Dict_Balance(dict, node);
 
     return 0;
@@ -268,7 +268,7 @@ void Dict_RotateLeft(Dict *dict, DictNode *node)
     DictNode_SetLeft(rightChild, node);
     Dict_ReplaceChild(dict, parent, node, rightChild);
 
-    // Met à jour les hauteurs
+    // Met ï¿½ jour les hauteurs
     DictNode_Update(node);
     DictNode_Update(rightChild);
 }
@@ -284,21 +284,21 @@ void Dict_RotateRight(Dict *dict, DictNode *node)
     DictNode_SetRight(leftChild, node);
     Dict_ReplaceChild(dict, parent, node, leftChild);
 
-    // Met à jour les hauteurs
+    // Met ï¿½ jour les hauteurs
     DictNode_Update(node);
     DictNode_Update(leftChild);
 }
 
 void Dict_Balance(Dict *dict, DictNode *node)
 {
-    // Remonte éventuellement jusqu'à la racine pour rééquilibrer l'arbre
+    // Remonte ï¿½ventuellement jusqu'ï¿½ la racine pour rï¿½ï¿½quilibrer l'arbre
     while (node != NULL)
     {
         bool updated = DictNode_Update(node);
         int balance = DictNode_GetBalance(node);
         /*if (!updated && (abs(balance) < 2))
         {
-            // Le noeud est à jour
+            // Le noeud est ï¿½ jour
             return;
         }*/
         // Il suffit de tester tous les noeuds 
@@ -360,20 +360,20 @@ int Dict_Remove(Dict *dict, Point key)
     else
     {
         // Le noeud a deux fils
-        // On l'échange avec sa valeur immédiatement inférieure (qui n'a plus de fils droit)
+        // On l'ï¿½change avec sa valeur immï¿½diatement infï¿½rieure (qui n'a plus de fils droit)
         DictNode *maxLeft = DictNode_Maximum(node->leftChild);
         KVPair pair = node->pair;
         node->pair = maxLeft->pair;
         maxLeft->pair = pair;
 
-        // Puis on le supprime comme précédemment
+        // Puis on le supprime comme prï¿½cï¿½demment
         Dict_ReplaceChild(dict, maxLeft->parent, maxLeft, maxLeft->leftChild);
         start = maxLeft->parent;
         DictNode_Delete(maxLeft);
     }
     dict->size--;
 
-    // Equilibre l'arbre à partir du parent du noeud supprimé
+    // Equilibre l'arbre ï¿½ partir du parent du noeud supprimï¿½
     Dict_Balance(dict, start);
 
     return value;
@@ -445,8 +445,8 @@ bool DictIter_HasNext(DictIter *iter)
     void* value;    
     Dict* dict = Dict_New();
 
-    //On met toutes les mots dans le dictionnaire précédement crée
-    //La clé étant le mot et la valeur le nombre de fois que la clé apparait dans la liste de mots 
+    //On met toutes les mots dans le dictionnaire prï¿½cï¿½dement crï¿½e
+    //La clï¿½ ï¿½tant le mot et la valeur le nombre de fois que la clï¿½ apparait dans la liste de mots 
     for (i = 0; i < wordcount; i++)
     {
         value = Dict_Get(dict, words[i]);

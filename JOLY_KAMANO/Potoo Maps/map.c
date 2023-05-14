@@ -1,4 +1,4 @@
-#include "map.h"
+﻿#include "map.h"
 
 #define CHARGEMENT 100
 #define TERRE 6378137
@@ -26,7 +26,6 @@ double Distance(Point a, Point b)
 	double cosb = cos(blat);
 	//Le cosinus des longitudes
 	double cosab = cos(blon - alon);
-	
 	double res = ((sina * sinb) + (cosa * cosb * cosab));
 	return (TERRE * acos(res));
 }
@@ -38,7 +37,6 @@ int Get_NearestPoint(Point start, Point* stockNodes, int count)
 	int res = 0;
 	for (int i = 0; i < count; i++)
 	{
-	
 		if (distance >= Distance(start, stockNodes[i]))
 		{
 			distance = Distance(start, stockNodes[i]);
@@ -62,12 +60,11 @@ void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, i
 	printf("Longitude : ");
 	scanf("%lf", &end->longitude);
 	printf("\n\n\n");
-
 	/*
-	start->latitude = 48.080862238743386;
-	start->longitude = -0.7481967545409075;
-	end->latitude = 48.09371262498784;
-	end->longitude = -0.7484873470449195;
+	start->latitude = 48.09143457156984;
+	start->longitude = -0.7677298616803988;
+	end->latitude = 48.076051198707674;
+	end->longitude = -0.7528898030895016;
 	*/
 	*idStart = Get_NearestPoint(*start, coordinates, count);
 	*idEnd = Get_NearestPoint(*end, coordinates, count);
@@ -86,8 +83,8 @@ Point* parsingFile(FILE* file, int* intersections)
 		printf("-");
 	printf("\n");
 
-	//Boucle de lecture et stockage des differents points
-	int count = 0, avancement = 0, tmp2;
+	//Boucle de lecture et stockage des diff�rentes intersections
+	int count = 0, avancement = 0;
 	char* segment = calloc(4096, sizeof(char));
 	/*int* tempOccurrences = (int*)calloc(10000, sizeof(int));
 	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));*/
@@ -105,7 +102,6 @@ Point* parsingFile(FILE* file, int* intersections)
 			printf("#");
 		}
 
-		tmp2 = strnlen(segment, 4096);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
@@ -177,10 +173,32 @@ Point* parsingFile(FILE* file, int* intersections)
 
 void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 {
+	//Calcul de la longueur maximale du fichier et initialisation de la barre de chargement
+	long total, atm, previous = 0;
+	int avancement = 0;
+	fseek(file, 0, SEEK_END);
+	total = ftell(file);
+	rewind(file);
+	float tmp = (float)total / (float)CHARGEMENT;
+	printf("Lecture du fichier en cours\n");
+	for (int i = 0; i < CHARGEMENT; i++)
+		printf("-");
+	printf("\n");
+
 	char* segment = calloc(4096, sizeof(char));
 	rewind(file);
 	while (fgets(segment, 4096, file))
 	{
+		//Calcul du pourcentage d'avancement de la barre de chargement
+		atm = ftell(file);
+		if ((float)atm >= ((float)previous + tmp))
+		{
+			avancement++;
+			previous = avancement * tmp;
+			printf("#");
+		}
+
+		//fgets(segment, 4096, file);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
@@ -300,45 +318,4 @@ void writeOutput(Point* route, int size)
 	}
 	fprintf(output, eFile);
 	fclose(output);
-}
-
-
-
-void writeTraitement(Graph* graph, int count)
-{
-	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","wb");
-	fprintf(pretraitement, "%d\n", count);
-
-	for (int i = 0; i < count; i++)
-	{
-		for (int j = 0; j < count; j++)
-		{
-			float poids = Graph_get(graph, i, j);
-			if (poids >= 0)
-			{
-				fprintf(pretraitement,"%f %d %d\n", poids, i , j);
-			}
-		}
-	}
-	fclose(pretraitement);
-}
-
-Graph* readTraitement()
-{
-	FILE* pretraitement = fopen("../Potoo Maps/pretraitement.txt","rb");
-	if (!pretraitement)
-		return NULL;
-	int count, u, v;
-	long scan;
-	float w;
-	scan = fscanf(pretraitement, "%d", &count);
-
-	Graph* graph = Graph_create(count);
-	while(fscanf(pretraitement, "%f %d %d", &w, &u, &v))
-	{
-		printf("%d, %d, %f\n", u, v, w);
-		Graph_set(graph, u, v, w);
-	}
-	fclose(pretraitement);
-	return graph;
 }

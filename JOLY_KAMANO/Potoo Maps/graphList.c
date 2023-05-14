@@ -1,5 +1,7 @@
 #include "graph.h"
 
+#define CHARGEMENT 100
+
 #ifndef _GRAPH_MAT
 
 typedef struct sGraph Graph;
@@ -220,5 +222,73 @@ Arc* Graph_getSuccessors(Graph* graph, int u, int* size)
     if (count == 0)
         return NULL;
     return successors;
+}
+
+void writeTraitement(Graph* graph, int count)
+{
+    FILE* pretraitement = fopen("../PersonalData/pretraitement", "wb");
+    fwrite(&(graph->size), sizeof(int), 1, pretraitement);
+    fwrite(&count, sizeof(int), 1, pretraitement);
+    int size = Graph_size(graph), avancement = 0;
+
+    printf("\nPretraitement du fichier en cours\n");
+
+    for (int i = 0; i < size; i++)
+    {
+        fwrite(&(graph->nodes[i].coordinates.latitude), sizeof(double), 1, pretraitement);
+        fwrite(&(graph->nodes[i].coordinates.longitude), sizeof(double), 1, pretraitement);
+
+    }
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            float poids = Graph_get(graph, i, j);
+            if (poids > 0)
+            {
+                fwrite(&poids, sizeof(float), 1, pretraitement);
+                fwrite(&i, sizeof(int), 1, pretraitement);
+                fwrite(&j, sizeof(int), 1, pretraitement);
+            }
+        }
+    }
+    fclose(pretraitement);
+}
+
+Graph* readTraitement(int* count, Point* coordinates)
+{
+    FILE* pretraitement = fopen("../PersonalData/pretraitement", "rb");
+    if (!pretraitement)
+        return NULL;
+    int u, v, size;
+    long scan;
+    float w;
+    double lat, lon;
+    Point tmp;
+
+    printf("\nChargement du fichier pretraite\n");
+    fread(&size, sizeof(int), 1, pretraitement);
+    fread(count, sizeof(int), 1, pretraitement);
+    Graph* graph = Graph_create(size);
+    for (int i = 0; i < size; i++)
+    {
+        fread(&lat, sizeof(double), 1, pretraitement);
+        fread(&lon, sizeof(double), 1, pretraitement);
+        graph->nodes[i].coordinates.latitude = lat;
+        graph->nodes[i].coordinates.longitude = lon;
+        graph->nodes[i].id = i;
+        tmp.latitude = lat;
+        tmp.longitude = lon;
+        coordinates[i] = tmp;
+    }
+    while(fread(&w, sizeof(float), 1, pretraitement))
+    {
+        fread(&u, sizeof(int), 1, pretraitement);
+        fread(&v, sizeof(int), 1, pretraitement);
+        Graph_set(graph, u, v, w);
+        Graph_set(graph, v, u, w);
+    }
+    fclose(pretraitement);
+    return graph;
 }
 #endif

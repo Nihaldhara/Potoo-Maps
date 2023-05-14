@@ -18,10 +18,12 @@ int main()
 	Point* coordinates = parsingFile(file, &count);
 
 #ifdef PRETRAITEMENT
-	Graph* graph = readTraitement();
+	Graph* graph = readTraitement(&count, coordinates);
 #endif // PRETRAITEMENT
 
 #ifndef PRETRAITEMENT
+	FILE* file = fopen("../../Data/esiea.geojson", "r");
+	count = parsingFile(file, coordinates);
 	Graph* graph = Graph_create(count);
 	for (int i = 0; i < count; i++)
 	{
@@ -39,11 +41,13 @@ int main()
 
 	//Liberation de memoire
 	free(coordinates);
-	
+	free(occurrences);
+
+#ifndef PRETRAITEMENT
 	fclose(file);
+#endif
 
 	Graph_destroy(graph);
-	//size = findPath(graph, 15, 356, route);
 
 	writeOutput(route, size);
 	free(route);
