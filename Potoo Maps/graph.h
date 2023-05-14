@@ -133,3 +133,11 @@ void Graph_bfsPrint(Graph* graph, int start);
 /// @param start l'identifiant du noeud étant à la racine de l'arbre.
 /// @return L'arbre couvrant du graphe.
 IntTree* Graph_spanningTree(Graph* graph, int start);
+
+
+/// @brief Ecrit le fichier de pre-traitement
+/// @param graph le graph cree
+/// @param count le nombre de noeud
+void writeTraitement(Graph* graph, int count);
+
+Graph* readTraitement(int* count, Point* coordinates);

@@ -24,6 +24,7 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     }
     if (end == start)
     {
+        printf("meme point de depart\n");
         free(predecessors);
         free(distances);
         return NULL;
@@ -160,7 +161,7 @@ void Graph_dijkstra(Graph* graph, int start, int end, int* predecessors, float* 
             }
             //printf("Ajouter\n");
             //BinHeap_print(heap);
-            printf("\n");
+            //printf("\n");
             free(arc);
         }
         BinHeap_destroy(heap);
