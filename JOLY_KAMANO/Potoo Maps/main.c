@@ -12,18 +12,15 @@
 int main()
 {
 	int count = 0, size = 0, idStart = 0, idEnd = 0;
-
 	Point startingPoint, endingPoint;
-	FILE* file = fopen("../Potoo Maps/france.geojson", "r");
-	Point* coordinates = parsingFile(file, &count);
 
 #ifdef PRETRAITEMENT
 	Graph* graph = readTraitement(&count, coordinates);
 #endif // PRETRAITEMENT
 
 #ifndef PRETRAITEMENT
-	FILE* file = fopen("../../Data/esiea.geojson", "r");
-	count = parsingFile(file, coordinates);
+	FILE* file = fopen("../../Data/mayenne.geojson", "r");
+	Point* coordinates = parsingFile(file, &count);
 	Graph* graph = Graph_create(count);
 	for (int i = 0; i < count; i++)
 	{
@@ -41,7 +38,6 @@ int main()
 
 	//Liberation de memoire
 	free(coordinates);
-	free(occurrences);
 
 #ifndef PRETRAITEMENT
 	fclose(file);

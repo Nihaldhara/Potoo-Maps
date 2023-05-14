@@ -83,16 +83,12 @@ Point* parsingFile(FILE* file, int* intersections)
 		printf("-");
 	printf("\n");
 
-	//Boucle de lecture et stockage des diff�rentes intersections
+	//Boucle de lecture et stockage des differentes intersections
 	int count = 0, avancement = 0;
 	char* segment = calloc(4096, sizeof(char));
-	/*int* tempOccurrences = (int*)calloc(10000, sizeof(int));
-	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));*/
 	Dict* dict = Dict_New();
 	while (fgets(segment, 4096, file))
 	{
-		// tester si Item c'est vraiment un string
-
 		//Calcul du pourcentage d'avancement de la barre de chargement
 		atm = ftell(file);
 		if ((float)atm >= ((float)previous + tmp))
@@ -152,18 +148,16 @@ Point* parsingFile(FILE* file, int* intersections)
 
 	//Recherche des intersections
 	int finalCount = 0;
-	Point* coordinates = (Point*)calloc(count, sizeof(coordinates));
+	Point* coordinates = (Point*)calloc(count, sizeof(Point));
 	DictIter* iter = (DictIter*)calloc(1, sizeof(DictIter));
-	KVPair* pair = (KVPair*)calloc(1, sizeof(KVPair));
 	Dict_GetIterator(dict, iter);
+	KVPair* pair = DictIter_Next(iter);
 	printf("\n");
-	for (int i = 0; i < count; i++)
+	while(DictIter_HasNext(iter) && finalCount < count)
 	{
-		pair = DictIter_Next(iter);
 		if (pair->value > 1)
-		{
 			coordinates[finalCount++] = pair->key;
-		}
+		pair = DictIter_Next(iter);
 	}
 	*intersections = finalCount;
 

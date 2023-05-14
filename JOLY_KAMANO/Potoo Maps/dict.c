@@ -268,7 +268,7 @@ void Dict_RotateLeft(Dict *dict, DictNode *node)
     DictNode_SetLeft(rightChild, node);
     Dict_ReplaceChild(dict, parent, node, rightChild);
 
-    // Met � jour les hauteurs
+    // Met a jour les hauteurs
     DictNode_Update(node);
     DictNode_Update(rightChild);
 }
@@ -284,7 +284,7 @@ void Dict_RotateRight(Dict *dict, DictNode *node)
     DictNode_SetRight(leftChild, node);
     Dict_ReplaceChild(dict, parent, node, leftChild);
 
-    // Met � jour les hauteurs
+    // Met a jour les hauteurs
     DictNode_Update(node);
     DictNode_Update(leftChild);
 }
@@ -340,7 +340,7 @@ int Dict_Remove(Dict *dict, Point key)
         return 0;
     }
     assert(node != NULL);
-    void *value = node->pair.value;
+    int value = node->pair.value;
 
     DictNode *start = NULL;
     if (node->leftChild == NULL)
