@@ -97,22 +97,25 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="communes.csv">
+    <None Include="..\Data\communes.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="communes_adjacentes.csv">
+    <None Include="..\Data\communes_adjacentes.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="esiea.geojson">
+    <None Include="..\Data\esiea.geojson">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="france.geojson">
+    <None Include="..\Data\france.geojson">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="laval.geojson">
+    <None Include="..\Data\laval.geojson">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pays_de_la_loire.geojson">
+    <None Include="..\Data\mayenne.geojson">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Data\pays_de_la_loire.geojson">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

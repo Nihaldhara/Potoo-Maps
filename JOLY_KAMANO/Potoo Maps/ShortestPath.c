@@ -12,7 +12,7 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
 
     if ((!predecessors) || (!distances))
     {
-        printf("Il y a un probleme dans les predecesseurs");
+        //printf("Il y a un probleme dans les predecesseurs");
         return NULL;
     }
 
@@ -24,7 +24,7 @@ Path* Graph_shortestPath(Graph* graph, int start, int end)
     }
     if (end == start)
     {
-        printf("meme point de depart\n");
+        printf("Vous avez choisi le meme point de depart\n");
         free(predecessors);
         free(distances);
         return NULL;

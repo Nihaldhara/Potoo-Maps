@@ -21,7 +21,7 @@ int main()
 #endif // PRETRAITEMENT
 
 #ifndef PRETRAITEMENT
-	FILE* file = fopen("../Potoo Maps/esiea.geojson", "r");
+	FILE* file = fopen("../../Data/esiea.geojson", "r");
 	count = parsingFile(file, coordinates);
 	Graph* graph = Graph_create(count);
 	for (int i = 0; i < count; i++)

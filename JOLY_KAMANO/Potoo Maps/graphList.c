@@ -226,7 +226,7 @@ Arc* Graph_getSuccessors(Graph* graph, int u, int* size)
 
 void writeTraitement(Graph* graph, int count)
 {
-    FILE* pretraitement = fopen("../Potoo Maps/pretraitement", "wb");
+    FILE* pretraitement = fopen("../PersonalData/pretraitement", "wb");
     fwrite(&(graph->size), sizeof(int), 1, pretraitement);
     fwrite(&count, sizeof(int), 1, pretraitement);
     int size = Graph_size(graph), avancement = 0;
@@ -257,7 +257,7 @@ void writeTraitement(Graph* graph, int count)
 
 Graph* readTraitement(int* count, Point* coordinates)
 {
-    FILE* pretraitement = fopen("../Potoo Maps/pretraitement", "rb");
+    FILE* pretraitement = fopen("../PersonalData/pretraitement", "rb");
     if (!pretraitement)
         return NULL;
     int u, v, size;
