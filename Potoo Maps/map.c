@@ -3,6 +3,14 @@
 #define CHARGEMENT 100
 #define TERRE 6378137
 
+bool sameCoordinates(Point a, Point b)
+{
+	if (a.latitude == b.latitude
+		&& a.longitude == b.longitude)
+		return true;
+	else return false;
+}
+
 double Distance(Point a, Point b)
 {
 	//Calculons les composantes en radian
@@ -65,7 +73,7 @@ void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, i
 	*idEnd = Get_NearestPoint(*end, coordinates, count);
 }
 
-int parsingFile(FILE* file, Point* coordinates)
+Point* parsingFile(FILE* file, int* intersections)
 {
 	//Calcul de la longueur maximale du fichier et initialisation de la barre de chargement
 	long total, atm, previous = 0;
@@ -78,18 +86,15 @@ int parsingFile(FILE* file, Point* coordinates)
 		printf("-");
 	printf("\n");
 
-	//Boucle de lecture et stockage des diff�rentes intersections
+	//Boucle de lecture et stockage des differents points
 	int count = 0, avancement = 0, tmp2;
 	char* segment = calloc(4096, sizeof(char));
-	int* tempOccurrences = (int*)calloc(10000, sizeof(int));
-	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));
+	/*int* tempOccurrences = (int*)calloc(10000, sizeof(int));
+	Point* tempCoordinates = (Point*)calloc(10000, sizeof(Point));*/
+	Dict* dict = Dict_New();
 	while (fgets(segment, 4096, file))
 	{
-
-		//faire une boucle infinie et break si fgets est nul
-		//Faire un strlength pour voir si on a pas un buffer trop petit 
 		// tester si Item c'est vraiment un string
-		//GetNumberValue pour eviter de faire un atof 
 
 		//Calcul du pourcentage d'avancement de la barre de chargement
 		atm = ftell(file);
@@ -101,7 +106,6 @@ int parsingFile(FILE* file, Point* coordinates)
 		}
 
 		tmp2 = strnlen(segment, 4096);
-		//printf("%d\n", tmp2);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
@@ -137,62 +141,46 @@ int parsingFile(FILE* file, Point* coordinates)
 					cJSON_Delete(object);
 					continue;
 				}
-				double dLat = cJSON_GetNumberValue(jLat);
-				double dLon = cJSON_GetNumberValue(jLon);
+				double dLat = atof(cJSON_GetStringValue(jLat));
+				double dLon = atof(cJSON_GetStringValue(jLon));
+				Point coordinates;
+				coordinates.latitude = dLat;
+				coordinates.longitude = dLon;
 
-				bool found = false;
-				for (int j = 0; j < count; j++)
-				{
-					if (dLat == tempCoordinates[j].latitude
-						&& dLon == tempCoordinates[j].longitude)
-					{
-						tempOccurrences[j]++;	
-						found = true;
-						break;
-					}
-				}
-
-				if (!found)
-				{
-					tempCoordinates[count].latitude = dLat;
-					tempCoordinates[count].longitude = dLon;
-					tempOccurrences[count++]++;
-				}
+				Dict_Insert(dict, coordinates, 1);
+				if (Dict_Get(dict, coordinates) == 2) count++;
 			}
 		}
 		cJSON_Delete(object);
 	}
-//soit on fait un realloc de 2 x la taille
-//soit on fait un dictionnaire
-// 
-// 
-	//Rectifications parce que je sais pas coder proprement
+
+	//Recherche des intersections
 	int finalCount = 0;
-	int* occurrences = (int*)calloc(count, sizeof(int));
+	Point* coordinates = (Point*)calloc(count, sizeof(coordinates));
+	DictIter* iter = (DictIter*)calloc(1, sizeof(DictIter));
+	KVPair* pair = (KVPair*)calloc(1, sizeof(KVPair));
+	Dict_GetIterator(dict, iter);
 	printf("\n");
 	for (int i = 0; i < count; i++)
 	{
-		if (tempOccurrences[i] > 1)
+		pair = DictIter_Next(iter);
+		if (pair->value > 1)
 		{
-			occurrences[finalCount] = tempOccurrences[i];
-			coordinates[finalCount++] = tempCoordinates[i];
+			coordinates[finalCount++] = pair->key;
 		}
 	}
-	
-	free(tempCoordinates);
-	free(tempOccurrences);
+	*intersections = finalCount;
+
 	free(segment);
-	free(occurrences);
-	return finalCount;
+	return coordinates;
 }
 
 void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 {
 	char* segment = calloc(4096, sizeof(char));
 	rewind(file);
-	while (!feof(file))
+	while (fgets(segment, 4096, file))
 	{
-		fgets(segment, 4096, file);
 		cJSON* object = cJSON_ParseWithLength(segment, 4096);
 		cJSON* jType = cJSON_GetObjectItem(object, "type");
 
@@ -235,8 +223,8 @@ void graphMap(Graph* graph, int count, Point* coordinates, FILE* file)
 					continue;
 				}
 
-				double dLat = cJSON_GetNumberValue(jLat);
-				double dLon = cJSON_GetNumberValue(jLon);
+				double dLat = atof(cJSON_GetStringValue(jLat));
+				double dLon = atof(cJSON_GetStringValue(jLon));
 
 				currentCoordinates.latitude = dLat;
 				currentCoordinates.longitude = dLon;

@@ -5,6 +5,12 @@
 #include "path.h"
 #include "graph.h"
 #include "ShortestPath.h"
+#include "dict.h"
+
+/// @brief Vérifie que deux points ont les mêmes coordonnées
+/// @param a le premier point
+/// @param b le deuxième point
+bool sameCoordinates(Point a, Point b);
 
 /// @brief
 /// param in a, 1er point
@@ -30,7 +36,7 @@ void inputCoordinates(Point* coordinates, int count, Point* start, Point* end, i
 /// Renvoie le nombre total d'intersections trouvï¿½es
 /// @param file le fichier ï¿½ parser
 /// @param coordinates le tableau de coordonnï¿½es pour chaque intersection
-int parsingFile(FILE* file, Point* coordinates);
+Point* parsingFile(FILE* file, int* count);
 
 /// @brief Parse le fichier une deuxiï¿½me fois pour constituer un graphe
 /// @param graph le graphe

@@ -12,13 +12,10 @@
 int main()
 {
 	int count = 0, size = 0, idStart = 0, idEnd = 0;
-	int* occurrences = (int*)calloc(10000, sizeof(int));
-	Point* coordinates = (Point*)calloc(10000, sizeof(Point));
-	Point startingPoint, endingPoint;
-	FILE* file = fopen("../Potoo Maps/esiea.geojson", "r");
-	//FILE* output = fopen("../Potoo Maps/output.geojson","w");
 
-	count = parsingFile(file, coordinates);
+	Point startingPoint, endingPoint;
+	FILE* file = fopen("../Potoo Maps/france.geojson", "r");
+	Point* coordinates = parsingFile(file, &count);
 
 #ifdef PRETRAITEMENT
 	Graph* graph = readTraitement();
@@ -39,11 +36,9 @@ int main()
 	Point* route = (Point*)calloc(count, sizeof(Point));
 	inputCoordinates(coordinates, count, &startingPoint, &endingPoint, &idStart, &idEnd);
 	size = findPath(graph, idStart, idEnd, route);
-	//printf("%lf, %lf\n %lf, %lf\n", startingPoint.longitude, startingPoint.latitude, endingPoint.longitude, endingPoint.latitude);
 
 	//Liberation de memoire
 	free(coordinates);
-	free(occurrences);
 	
 	fclose(file);
 

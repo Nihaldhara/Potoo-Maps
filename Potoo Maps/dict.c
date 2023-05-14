@@ -1,14 +1,26 @@
 #include "dict.h"
 
-bool Dict_Find(Dict *dict, char *key, DictNode **res);
+bool Dict_Find(Dict *dict, Point key, DictNode **res);
 void Dict_Balance(Dict *dict, DictNode *node);
 
-DictNode *DictNode_New(char *key, void *value)
+int coordinatescmp(Point a, Point b)
+{
+    if (a.latitude < b.latitude) return -1;
+    else if (a.latitude > b.latitude) return 1;
+    else
+    {
+        if (a.longitude < b.longitude) return -1;
+        else if (a.longitude > b.longitude) return 1;
+        else return 0;
+    }
+}
+
+DictNode *DictNode_New(Point key, int value)
 {
     DictNode *node = (DictNode *)calloc(1, sizeof(DictNode));
     AssertNew(node);
 
-    node->pair.key = _strdup(key);
+    node->pair.key = key;
     node->pair.value = value;
 
     return node;
@@ -17,7 +29,6 @@ DictNode *DictNode_New(char *key, void *value)
 void DictNode_Delete(DictNode *node)
 {
     if (!node) return;
-    free(node->pair.key);
     free(node);
 }
 
@@ -106,7 +117,7 @@ void DictNode_Print(DictNode *node)
 {
     if (!node) return;
     DictNode_Print(node->leftChild);
-    printf("  \"%s\": %p,\n", node->pair.key, node->pair.value);
+    printf("  \"%lf %lf\": %p,\n", node->pair.key.latitude, node->pair.key.longitude, node->pair.value);
     DictNode_Print(node->rightChild);
 }
 
@@ -128,7 +139,7 @@ void DictNode_PrintTree(DictNode *node, int depth, int isLeft)
         if (isLeft) printf("  \\-");
         else printf("  /-");
     }
-    printf("[%s]\n", node->pair.key);
+    printf("[%lf %lf]\n", node->pair.key.latitude, node->pair.key.longitude);
 
     DictNode_PrintTree(node->leftChild, depth + 1, true);
 }
@@ -138,29 +149,29 @@ void Dict_PrintTree(Dict *dict)
     DictNode_PrintTree(dict->root, 0, false);
 }
 
-void *Dict_Insert(Dict *dict, char *key, void *value)
+int Dict_Insert(Dict *dict, Point key, int value)
 {
     if (dict->root == NULL)
     {
         dict->root = DictNode_New(key, value);
         dict->size = 1;
 
-        return NULL;
+        return 0;
     }
 
     DictNode *node = NULL;
     if (Dict_Find(dict, key, &node))
     {
         // La donnée est déjà présente dans l'arbre
-        void *prevValue = node->pair.value;
-        node->pair.value = value;
+        int prevValue = node->pair.value;
+        node->pair.value++;
 
         return prevValue;
     }
 
     // Crée le nouveau noeud
     DictNode *newNode = DictNode_New(key, value);
-    if (strcmp(key, node->pair.key) < 0)
+    if (coordinatescmp(key, node->pair.key) < 0)
     {
         DictNode_SetLeft(node, newNode);
     }
@@ -173,10 +184,10 @@ void *Dict_Insert(Dict *dict, char *key, void *value)
     // Equilibre l'arbre à partir du parent du nouveau noeud
     Dict_Balance(dict, node);
 
-    return NULL;
+    return 0;
 }
 
-bool Dict_Find(Dict *dict, char *key, DictNode **res)
+bool Dict_Find(Dict *dict, Point key, DictNode **res)
 {
     if (dict->root == NULL)
     {
@@ -187,7 +198,7 @@ bool Dict_Find(Dict *dict, char *key, DictNode **res)
     DictNode *node = dict->root;
     while (true)
     {
-        int cmp = strcmp(key, node->pair.key);
+        int cmp = coordinatescmp(key, node->pair.key);
         if (cmp == 0)
         {
             *res = node;
@@ -214,14 +225,14 @@ bool Dict_Find(Dict *dict, char *key, DictNode **res)
     }
 }
 
-void *Dict_Get(Dict *dict, char *key)
+int Dict_Get(Dict *dict, Point key)
 {
     DictNode *res = NULL;
     if (Dict_Find(dict, key, &res))
     {
         return res->pair.value;
     }
-    return NULL;
+    return 0;
 }
 
 void Dict_ReplaceChild(
@@ -316,17 +327,17 @@ void Dict_Balance(Dict *dict, DictNode *node)
     }
 }
 
-void *Dict_Remove(Dict *dict, char *key)
+int Dict_Remove(Dict *dict, Point key)
 {
     if (dict->root == NULL)
     {
-        return NULL;
+        return 0;
     }
 
     DictNode *node = NULL;
     if (Dict_Find(dict, key, &node) == false)
     {
-        return NULL;
+        return 0;
     }
     assert(node != NULL);
     void *value = node->pair.value;
